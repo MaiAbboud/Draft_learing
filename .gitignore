@@ -1,0 +1,10 @@
+draft-env
+*.idea
+*~
+*__pycache__*
+*.pyc
+*.pytest_cache
+*.cache*
+data/
+.vscode/
+model.pth
