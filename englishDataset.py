@@ -35,6 +35,14 @@ class englishDataset(VisionDataset):
         dataset_train_size = int(data_size * 0.8)
         self.dataset_train = data_csv_file.iloc[0:dataset_train_size,:]
         self.dataset_test = data_csv_file.iloc[dataset_train_size:,:]
+        self.classes = ['0','1','2','3','4','5','6','7','8','9',
+        'a','b','c','d','e','f',
+        'g','h','i','j','k','l','m','n',
+        'o','p','q','r','s','t','u','v','w','x','y','z',
+        'A','B','C','D','E','F','G','H','I','J','K','L',
+        'M','N','O','P','Q','R','S','T','U','V','W','X',
+        'Y','Z'
+        ]
     
     def __getitem__(self, index: int) -> Any:
         # read image for specific data
@@ -55,38 +63,40 @@ class englishDataset(VisionDataset):
             return test_size
 
 
-dataset = englishDataset(
-    root = 'data/english_dataset',
-    train=True
-)
-train_size = len(dataset)
+# dataset = englishDataset(
+#     root = 'data/english_dataset',
+#     train=True
+# )
+# train_size = len(dataset)
 
-#load all dataset time without dataloader
-start_time= time.time()
-for sample in dataset.dataset_train:
-    print(sample)
-end_time = time.time()
-print(f"time without dataloader class is : {end_time - start_time}")
+# #load all dataset time without dataloader
+# start_time= time.time()
+# for sample in dataset.dataset_train:
+#     print(sample)
+# end_time = time.time()
+# print(f"time without dataloader class is : {end_time - start_time}")
 
-# with dataloader 
-batch_size = 1
-start_time= time.time()
-train_dataloader = dataloader.DataLoader(dataset=dataset,batch_size=batch_size)
-end_time = time.time()
-print(f"time with dataloader class is : {end_time - start_time}")
+# # with dataloader 
+# batch_size = 1
+# start_time= time.time()
+# train_dataloader = dataloader.DataLoader(dataset=dataset,batch_size=batch_size)
+# end_time = time.time()
+# print(f"time with dataloader class is : {end_time - start_time}")
 
 
-# show training data
-row ,col = 3,3
-fig  = plt.figure()
-rand_index = np.random.randint(1,train_size,size = row*col+1)
+# # show training data
+# row ,col = 3,3
+# fig  = plt.figure()
+# rand_index = np.random.randint(1,train_size,size = row*col+1)
 
-for i in range(1,col*row+1):
-    j = rand_index[i]
-    img,label = dataset[j]
-    fig.add_subplot(row,col,i)
-    plt.imshow(img[1,:,:] , cmap = 'gray')
-    plt.title(label)
-    plt.axis('off')
-plt.show()
-print(  )
+# for i in range(1,col*row+1):
+#     j = rand_index[i]
+#     img,label = dataset[j]
+#     fig.add_subplot(row,col,i)
+#     plt.imshow(img[1,:,:] , cmap = 'gray')
+#     plt.title(label)
+#     plt.axis('off')
+# plt.show()
+# print(  )
+
+
