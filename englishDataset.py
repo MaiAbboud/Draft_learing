@@ -33,7 +33,6 @@ class englishDataset(VisionDataset):
         self.dataset_test = data_csv_file.iloc[dataset_train_size:,:]
     
     def __getitem__(self, index: int) -> Any:
-        # return super().__getitem__(index)
         # read image for specific data
         img_pth = os.path.join(self.root , self.dataset_train['image'][index]) 
         img , label = read_image(img_pth) , self.dataset_train['label'][index]
@@ -52,23 +51,6 @@ train_size = dataset.dataset_train.shape[0]
 test_size = dataset.dataset_test.shape[0]
 
 
-# #read .csv data file 
-# data_pth = '/home/lab/Documents/Draft_learing/data/english_dataset'
-# data_csv_file = pd.read_csv(data_pth+'/english.csv')
-# data_size = data_csv_file.shape[0]
-# #shuffle dataset
-# np.random.seed(10)
-# np.random.shuffle(data_csv_file.values)
-
-# #split dataset to train & test (0.8/0.2)
-# dataset_train_size = int(data_size * 0.8)
-# dataset_train = data_csv_file.iloc[0:dataset_train_size,:]
-# dataset_test = data_csv_file.iloc[dataset_train_size:,:]
-
-# # read image for specific data
-# img_pth = os.path.join(data_pth , dataset_train['image'][0]) 
-# img = read_image(img_pth)
-
 # show training data
 row ,col = 3,3
 fig  = plt.figure()
@@ -76,13 +58,9 @@ rand_index = np.random.randint(1,train_size,size = row*col+1)
 
 for i in range(1,col*row+1):
     j = rand_index[i]
-    # img_pth = os.path.join(data_pth , dataset_train['image'][j]) 
-    # img , label = read_image(img_pth) , dataset_train['label'][j]
     img,label = dataset[j]
     fig.add_subplot(row,col,i)
     plt.imshow(img[1,:,:] , cmap = 'gray')
     plt.title(label)
     plt.axis('off')
 plt.show()
-# print(img_pth)
-# print(0)
