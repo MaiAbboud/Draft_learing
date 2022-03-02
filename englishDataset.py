@@ -1,5 +1,6 @@
 import os
 from time import time
+import torch
 # from pyrsistent import optional
 from torchvision.io import read_image
 from torchvision.datasets import VisionDataset
@@ -11,6 +12,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 from torch.utils.data import dataloader
+import torchvision.transforms as T
+
 
 class englishDataset(VisionDataset):
     def __init__(
@@ -33,8 +36,12 @@ class englishDataset(VisionDataset):
 
         #split dataset to train & test (0.8/0.2)
         dataset_train_size = int(data_size * 0.8)
-        self.dataset_train = data_csv_file.iloc[0:dataset_train_size,:]
-        self.dataset_test = data_csv_file.iloc[dataset_train_size:,:]
+        if self.train:
+            self.dataset_train = data_csv_file.iloc[0:dataset_train_size,:]
+        else :
+            self.dataset_test = data_csv_file.iloc[dataset_train_size:,:]
+            self.dataset_test = self.dataset_test.reset_index()
+
         self.classes = ['0','1','2','3','4','5','6','7','8','9',
         'a','b','c','d','e','f',
         'g','h','i','j','k','l','m','n',
@@ -43,15 +50,25 @@ class englishDataset(VisionDataset):
         'M','N','O','P','Q','R','S','T','U','V','W','X',
         'Y','Z'
         ]
+        self.classes_dict = {self.classes[i]:i for i in range(len(self.classes))}
+
     
     def __getitem__(self, index: int) -> Any:
         # read image for specific data
         if self.train:
             img_pth = os.path.join(self.root , self.dataset_train['image'][index]) 
-            img , label = read_image(img_pth) , self.dataset_train['label'][index]
+            label_name = self.dataset_train['label'][index]
         else:
             img_pth = os.path.join(self.root , self.dataset_test['image'][index]) 
-            img , label = read_image(img_pth) , self.dataset_test['label'][index]
+            label_name = self.dataset_test['label'][index]
+
+        img = read_image(img_pth)
+        transform = T.Resize(size = (28,28))
+        img = transform(img)  
+        img = img[1,...]*1.0
+
+        label_num = self.classes_dict[label_name]
+        label =  label_num
         return img,label
 
     def __len__(self) -> int:
@@ -65,9 +82,12 @@ class englishDataset(VisionDataset):
 
 # dataset = englishDataset(
 #     root = 'data/english_dataset',
-#     train=True
+#     train=False
 # )
-# train_size = len(dataset)
+# print(len(dataset.classes))
+# test_size = len(dataset)
+# data_10 = dataset[10]
+# print(data_10)
 
 # #load all dataset time without dataloader
 # start_time= time.time()
@@ -93,10 +113,26 @@ class englishDataset(VisionDataset):
 #     j = rand_index[i]
 #     img,label = dataset[j]
 #     fig.add_subplot(row,col,i)
-#     plt.imshow(img[1,:,:] , cmap = 'gray')
+#     plt.imshow(img , cmap = 'gray')
 #     plt.title(label)
 #     plt.axis('off')
 # plt.show()
 # print(  )
+
+
+# # show testing data
+# row ,col = 3,3
+# fig  = plt.figure()
+# rand_index = np.random.randint(1,test_size,size = row*col+1)
+
+# for i in range(1,col*row+1):
+#     j = rand_index[i]
+#     img,label = dataset[j]
+#     fig.add_subplot(row,col,i)
+#     plt.imshow(img, cmap = 'gray')
+#     plt.title(dataset.classes[label])
+#     plt.axis('off')
+# plt.show()
+# print()
 
 
